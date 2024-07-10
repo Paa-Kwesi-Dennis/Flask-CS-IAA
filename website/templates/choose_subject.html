@@ -1,0 +1,77 @@
+{% extends "base.html" %} {% block title %}Teacher Dashboard{% endblock %}
+{% block navlink %}
+teacher
+{% endblock %}
+{% block navname %}
+Teacher Dashboard
+{% endblock %}
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+    }
+
+    .sidebar {
+        width: 200px;
+        height: 80vh;
+        position: fixed;
+        top: 110px;
+        left: 0;
+        background-color: #fff;
+        padding: 20px;
+        padding-top: 100px;
+        border-right: 1px solid #ddd;
+    }
+
+    .content {
+        margin-left: 220px;
+        padding: 20px;
+    }
+
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .form-container {
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .form-container input,
+    .form-container textarea {
+        width: 100%;
+    }
+
+    .form-container button {
+        margin-top: 10px;
+    }
+</style>
+
+<form method="POST">
+    <div class="form-container center">
+        <span class="ms-3">
+            <select name="subject" class="form-select form-select-lg mb-3" aria-label="Large select example">
+                <option selected>Choose Subject</option>
+                {% for subject in subjects %}
+                <option name="subject" value="{{ subject.SubjectID }}|{{ subject.SubjectName }}">{{ subject.SubjectName }}-{{subject.Level}}</option>
+                {% endfor %}
+            </select>
+        </span>
+    </div>
+    <div align="center">
+        <button type="submit" class="btn btn-primary">Next</button>
+    </div>
+</form>
+
+
+
+
+
+{% endblock %}

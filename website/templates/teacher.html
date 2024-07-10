@@ -1,0 +1,157 @@
+{% extends "base.html" %} {% block title %}Teacher Dashboard{% endblock %}
+{% block navlink %}
+teacher
+{% endblock %}
+{% block navname %}
+Teacher Dashboard
+{% endblock %}
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+    }
+
+    .sidebar {
+        width: 200px;
+        height: 80vh;
+        position: fixed;
+        top: 110px;
+        left: 0;
+        background-color: #fff;
+        padding: 20px;
+        padding-top: 100px;
+        border-right: 1px solid #ddd;
+    }
+
+
+    .content {
+        margin-left: 220px;
+        padding: 20px;
+    }
+
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .form-container {
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .form-container input,
+    .form-container textarea {
+        width: 100%;
+    }
+
+    .form-container button {
+        margin-top: 10px;
+    }
+</style>
+<br>
+<h2 class="text-center">Teacher's Dashboard</h2>
+<div class="sidebar">
+
+    <h5 class="mt-4">Your Students</h5>
+
+    <ul class="list-group">
+        {% for student in students_in_class %}
+        <li class="list-group-item">{{student.FirstName}} {{student.LastName}} </li>
+        {% endfor %}
+
+    </ul>
+
+</div>
+<div class="content">
+    <div class="content-header">
+        <h2>{{teachers.FirstName}} {{teachers.LastName}}</h2>
+        
+        <div class="mt-4 text-center">
+            <a href="/choose_subject"><button class="btn btn-dark">Choose Subject</button></a>
+        </div>
+    </div>
+    <div class="text-center">
+        <h3>
+            {% for subject in teachers.subjects %}
+            <p>{{subject.SubjectName}} Class</p>
+            {% endfor %}
+        </h3>
+    </div>
+    
+
+    
+    {% for student in students_in_class %}
+    
+    <form method="POST">
+        <div class="form-container mt-6">
+            <input type="hidden" name="student_id" id="student_id" value="{{ student.StudentID }}">
+            <input type="hidden" name="subject_id" id="subject_id" value="{{ student.SubjectID }}">
+            <input type="hidden" name="subject_name" value="{{ student.SubjectName }}">
+            <div class="row mb-3">
+                <div class="col-12 text-center">
+                    <h4>{{student.FirstName}} {{student.LastName}} </h4>
+                </div>
+            </div>
+            <div class="row mb-3">
+                
+                <label for="teacherPredictedGrade" class="col-sm-4  col-form-label">Teacher's Predicted Grade:
+                    {% for grade in teachers.predicted_grades %}
+                    {% if grade.StudentID == student.StudentID %}   
+                    {{grade.TeacherPredictedGrade}}
+                    {% else %}
+                    {{pass}}
+                    {% endif %}
+                    {% endfor %}
+                </label>
+                <div class="col-sm-4 md-end">
+                    <select name="pg" id="pg" class="form-select form-select-sm mb-3" aria-label="Large select example">
+                        <option selected>Choose Predicted Grade</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        
+                    </select>
+                </div>
+
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label for="studentPredictedGrade" class="form-label">Student's Predicted Grade:</label>
+                    <input type="text" id="teacherPredictedGrade" class="form-control" value="{{student.StudentPredictedGrade}}" readonly>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label for="comment" name="comment" class="form-label">Student's Comment:</label>
+                    <textarea id="comment" rows="3" class="form-control" readonly>{{student.Comment}}</textarea>
+                </div>
+            </div>
+            
+            <div class="col-12 text-right">
+                <button class="btn btn-danger text-center">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                </button>
+            </div>
+            
+        </div> 
+        
+    </form>
+    <br>
+    {% endfor %}
+</div>
+{% endblock %}

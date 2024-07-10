@@ -1,0 +1,149 @@
+{% extends "base.html" %} {% block title %}Admin Dashboard{% endblock %}
+{% block navlink %}
+admin
+{% endblock %}
+{% block navname %}
+Admin Dashboard
+{% endblock %}
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+    }
+
+    .sidebar {
+        width: 200px;
+        height: 80vh;
+        position: fixed;
+        top: 80px;
+        left: 0;
+        background-color: #fff;
+        padding: 20px;
+        padding-top: 100px;
+        border-right: 1px solid #ddd;
+    }
+
+
+    .content {
+        margin-left: 120px;
+        padding: 20px;
+    }
+
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 10px;
+    }
+
+    .form-container {
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .form-container input,
+    .form-container textarea {
+        width: 100%;
+    }
+
+    .form-container button {
+        margin-top: 10px;
+    }
+</style>
+
+
+<h1 class="text-center my-3">This is the Admin Dashboard</h1>
+<div class="content">
+
+    <div class="content-header">
+        <h2>{{admin.FirstName}} {{admin.LastName}}</h2>
+    </div>
+
+    <!-- Search form -->
+    <form action="{{ url_for('views.admin_dashboard') }}" method="get">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="query" value="{{query}}" placeholder="Search for students..." aria-label="Search for students..."
+            aria-describedby="button-addon2">
+            <button class="btn btn-primary" type="submit" id="button-addon2">Search</button>  
+        </div>
+    </form>
+    
+    {% if students %}
+        {% for student in students %}
+            <div id="accordion">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-outline-dark" data-toggle="collapse" data-target="#collapse{{student.StudentID}}" aria-expanded="true"
+                                aria-controls="collapseOne">
+                                {{student.FirstName}} {{student.LastName}}
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapse{{student.StudentID}}" class="collapse hide" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body">
+                            <table class="table table-striped table-bordered table-dark">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Subject</th>
+                                        <th scope="col">Student's Predicted Grade</th>
+                                        <th scope="col">Teacher's Predicted Grade</th>
+                                    </tr>
+                                </thead>
+                                {% for subject in student.subjects %}
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">{{subject.SubjectName}} {{subject.Level}}</th>
+                                        <td>
+                                            {% for grade in student.predicted_grades %}
+                                                {% if grade.SubjectID == subject.SubjectID %}
+                                                    {% if grade.StudentPredictedGrade == None %}
+                                                    N/A
+                                                    {% else %}
+                                                    {{grade.StudentPredictedGrade}}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            {% for grade in student.predicted_grades %}
+                                                {% if grade.SubjectID == subject.SubjectID %}
+                                                    {% if grade.TeacherPredictedGrade == None %}
+                                                    N/A
+                                                    {% else %}
+                                                    {{grade.TeacherPredictedGrade}}
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                    
+                                </tbody>
+                                {% endfor %}
+                            </table>
+                            
+                            <div class="text-right">
+                                <form method="POST">
+                                    <input type="hidden" name="student_id" id="student_id" value="{{ student.StudentID }}">
+                                    <button class="px-50px btn btn-primary">
+                                        Calculate Total IB Points
+                                    </button>
+                                </form>
+                            </div>
+                            <strong>Total IB Points: {{student.Total}}</strong>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No student found</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %}
+{% block navlink %}
+signup
+{% endblock %}
+{% block navname %}
+Sign Up
+{% endblock %}
+{% block content %}
+<form method="POST">
+    <h3 align="center">Sign Up</h3>
+    <br>
+    <div class="row">
+        
+        <div class="col">
+            <label for="firstName">Enter First Name: </label>
+            <input type="text" class="form-control"  id="firstName" name="firstName" placeholder="First name" aria-label="First name"  required>
+        </div>
+        <div class="col">
+            <label for="lastName">Enter Last Name: </label>
+            <input type="text" class    ="form-control" id="lastName" name="lastName" placeholder="Last name" aria-label="Last name" required>
+        </div>  
+    </div>
+    <br>
+    <div>
+        <label for="role">Select Role: </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="role" id="admin" value="admin">
+        <label class="form-check-label" for="admin">
+            Admin
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="role" id="teacher" value="teacher">
+        <label class="form-check-label" for="teacher">
+            Teacher
+        </label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="role" id="student" value="student">
+        <label class="form-check-label" for="student">
+            Student
+        </label>
+    </div>
+    <br>
+    <div id="extra-fields"></div>
+    <br>
+    <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required >
+    </div>
+    
+    <div class="form-group">
+        <label for="password1">Password</label>
+        <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password" required  />
+    </div>
+    <div class="form-group">
+        <label for="password2">Password (Confirm)</label>
+        <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password" required />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<script>
+    document.querySelectorAll('input[name="role"]').forEach((elem) => {
+        elem.addEventListener("change", function (event) {
+            const selectedRole = event.target.value;
+            const extraFields = document.getElementById('extra-fields');
+            extraFields.innerHTML = '';
+
+            if (selectedRole === 'student') {
+                extraFields.innerHTML = `
+                        <label for="grade">Grade:</label>
+                        <input type="number" id="grade" name="grade" value="grade" required>
+                        
+                        <br>
+                    `;
+            }
+        });
+    });
+</script>
+{% endblock %}

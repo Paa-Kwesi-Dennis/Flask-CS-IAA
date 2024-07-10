@@ -1,0 +1,186 @@
+{% extends "base.html" %} {% block title %}Student Dashboard{% endblock %}
+{% block navlink %}
+student
+{% endblock %}
+{% block navname %}
+Student Dashboard
+{% endblock %}
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f9fa;
+    }
+
+    .sidebar {
+        width: 220px;
+        height: 80vh;
+        position: absolute;
+        top: 110px;
+        left: 0;
+        background-color: #fff;
+        padding-top: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        border-right: 1px solid #ddd;
+    }
+
+    .content {
+        margin-left: 220px;
+        padding: 20px;
+    }
+
+    .content-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .form-container {
+        background-color: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .form-container input,
+    .form-container textarea {
+        width: 100%;
+    }
+
+    .form-container button {
+        margin-top: 10px;
+    }
+</style>
+<br>
+<h2 class="text-center">Student Dashboard</h2>
+<div class="sidebar">
+    
+    <h5 class="mt-auto"> Your Subjects</h5>
+    
+    <ul class="list-group mb-5">
+        {% for subject in students.subjects %}
+        <li class="list-group-item" value="{{subject.SubjectName}}">
+
+            {{subject.SubjectName}} 
+            {% if subject.Level==None %}
+            {{pass}}
+            {% else %}
+            {{subject.Level}} 
+            {% endif %}
+        </li>
+        {% endfor %}
+        
+    </ul>
+    <div class="mt-4">
+        <p>Your total IB Points: {{students.Total}}</p>
+    </div>
+</div>
+
+<div class="content">
+    <div class="content-header">
+        <h2>{{students.FirstName}} {{students.LastName}}</h2>
+        <div>
+            <h3>Your total IB Points: 
+                {% if students.Total == None %}
+                    #
+                {% else %}
+                {{students.Total}}
+                {% endif %}
+            </h3>
+            <span class="ms-3 ">Grade {{students.Grade}}</span>
+        </div>
+    </div>
+    <ul class="list-group list-group-flush" id="grades">
+        {% for predictedgrade in students.predicted_grades %}
+        <li class="list-group-item">
+            <h3> {{predictedgrade.subject.SubjectName}}
+                {% if predictedgrade.subject.Level == None %}
+                {{pass}}
+                {% else %}
+                {{predictedgrade.subject.Level}}
+                {% endif %}
+            </h3>
+            <p> Student's Predicted Grade: {{predictedgrade.StudentPredictedGrade}}</p>
+            <p>Student's Comment:  {{predictedgrade.Comment}}</p>
+            <!-- <p>Teacher's Name{{predictedgrade.teacher.TeacherName}}</p> -->
+            <p>Teacher's Predicted Grade:
+                {% if predictedgrade.TeacherPredictedGrade == None %}
+                N/A
+                {% else %}
+                {{predictedgrade.TeacherPredictedGrade}}
+                {% endif %}
+            </p>
+            <form method="POST">
+
+                <button type="button" class="close" id="delete" onclick="return confirm('Are you sure you want to delete this predicted grade?')">  
+                    <a href="{{ url_for('views.delete_predicted_grade', student_id=predictedgrade.StudentID, subject_id=predictedgrade.SubjectID) }}">
+                    <span aria-hidden="true">&times;</span>
+                    </a>
+                </button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    <br>
+    <form method="POST">
+        <div class="form-container mt-6">
+            <div class="row mb-3">
+                <div class="col-12 text-center">
+                    <select name="subject" class="form-select form-select-lg mb-3" aria-label="Large select example">
+                        <option selected>Choose Subject</option>
+                        {% for subject in subjects %}
+                            <option value="{{ subject.SubjectID }}|{{ subject.SubjectName }}">{{ subject.SubjectName }} - {{ subject.Level }} {{subject.SubjectID}}</option>
+                            
+                        {% endfor %}
+                        </select>
+                        <input type="hidden" name="subject_id" id="subject_id" value="">
+                    </div>
+                </div>
+
+            
+            
+            <div class="row mb-3">
+                    <label for="studentPredictedGrade" class="col-sm-4  col-form-label">Student's Predicted Grade:</label>
+                    <div class="col-sm-4 md-end">
+                        <select name="pg" id="pg" class="form-select form-select-sm mb-3" aria-label="Large select example">
+                            <option selected>Choose Predicted Grade</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
+                    </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-12">
+                    <label for="comment" class="form-label">Comment</label>
+                    <textarea id="comment" name="comment" value="comment" rows="3" class="form-control"></textarea>
+                </div>
+            </div>
+        </div>
+            <div class="col-12 text-right pt-1">
+                <button class="btn btn-danger text-center">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Enter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    function updateSubjectID() {
+        var select = document.getElementById("subject");
+        var subjectID = select.options[select.selectedIndex].getAttribute("data-id");
+        document.getElementById("subject_id").value = subjectID;
+    }
+</script>
+{% endblock %}
