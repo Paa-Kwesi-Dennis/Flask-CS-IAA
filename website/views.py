@@ -17,7 +17,7 @@ def role_required(role):
         @login_required
         def decorated_view(*args, **kwargs):
             if current_user.Role != role:
-                flash(f"You do not have access to that page.", category="error")
+                flash(f"You do not have access to the {role}'s dashboard.", category="error")
                 return redirect(url_for(f'views.{current_user.Role}_dashboard'))
             return func(*args, **kwargs)
         return decorated_view
@@ -149,24 +149,7 @@ def teacher_dashboard():
 
     # Query to get all students in a teacher's class
     teacher_id = current_user.UserID  # Replace with the specific teacher's ID
-    # students_in_class = (
-    #     db.session.query(
-    #         Student.StudentID, 
-    #         Student.FirstName, 
-    #         Student.LastName, 
-    #         Subject.SubjectID,
-    #         Subject.SubjectName,
-    #         PredictedGrade.StudentPredictedGrade,
-    #         PredictedGrade.Comment
-    #     )
-    #     .join(StudentSubject, Student.StudentID == StudentSubject.StudentID)
-    #     .join(Subject, StudentSubject.SubjectID == Subject.SubjectID)
-    #     .join(TeacherSubject, Subject.SubjectID == TeacherSubject.SubjectID)
-    #     .join(Teacher, TeacherSubject.TeacherID == Teacher.TeacherID)
-    #     .join(PredictedGrade, (Student.StudentID == PredictedGrade.StudentID) & (Subject.SubjectID == PredictedGrade.SubjectID))
-    #     .filter(Teacher.TeacherID == teacher_id)
-    #     .all()
-    # )
+
 
     students_in_class_query = (
     db.session.query(
@@ -248,7 +231,7 @@ def student_dashboard():
             # Count the number of subjects the student is currently enrolled in
             subject_count = db.session.query(models.StudentsSubjects).filter_by(StudentID=current_user.UserID).count()
             if subject_count >= 8:
-                flash('You cannot add more than 8 subjects', category='error')
+                flash('You can not add more than 8 predicted grades', category='error')
             elif not pg:
                 flash('Select a predicted grade', category='error')
             elif len(comment) < 4:
@@ -279,7 +262,7 @@ def student_dashboard():
 
 
     except:
-        flash('Subject Already Added', category="error")
+        flash('Select a Subject', category="error")
         return redirect(url_for("views.student_dashboard"))
         
      # Fetching EE and TOK grades for the logged-in student
